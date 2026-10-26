@@ -77,6 +77,20 @@ namespace AntdUILab
                 form.Inspect.SelectPage(0);
             }
 
+            // 没有事件的控件（Tag）：点一下也能看到「收到点击」的水波
+            Meta tag = null;
+            if (Catalog.ByName.ContainsKey("Tag")) tag = Catalog.ByName["Tag"];
+            if (tag != null)
+            {
+                form.Pick(tag);
+                form.Inspect.SelectPage(1);
+                Pump(150);
+                form.Inspect.FireDemoClick();
+                Pump(150);
+                Save(form, Path.Combine(dir, "9b-tap.png"));
+                form.Inspect.SelectPage(0);
+            }
+
             Meta table = null;
             if (Catalog.ByName.ContainsKey("Table")) table = Catalog.ByName["Table"];
             if (table != null)
