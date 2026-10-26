@@ -56,6 +56,19 @@ namespace AntdUILab.Ui
             };
         }
 
+        /// <summary>控件收到鼠标时闪一下并浮出「收到点击 (x, y)」——没有事件/无状态的控件也能看到反馈。</summary>
+        public void TraceTap(Control target, Point local)
+        {
+            FlashEvent("收到点击", "(" + local.X + ", " + local.Y + ")");
+        }
+
+        private void ControlMouseDown(object sender, MouseEventArgs e)
+        {
+            var c = sender as Control;
+            if (c == null || _dragMode) return;
+            TraceTap(c, e.Location);
+        }
+
         /// <summary>事件触发时在控件外圈脉冲一下，并在旁边浮出「事件名 + 参数」。</summary>
         public void FlashEvent(string name, string info)
         {
@@ -75,6 +88,7 @@ namespace AntdUILab.Ui
             if (ctl is Control)
             {
                 var c = (Control)ctl;
+                c.MouseDown += ControlMouseDown;
                 Controls.Add(c);
             }
             if (_sizeHandle != null)
@@ -284,7 +298,7 @@ namespace AntdUILab.Ui
 
                 string tip = _dragMode
                     ? "拖动模式：按住控件即可移动（控件暂时不响应点击）；点「✥ 拖动」退出"
-                    : "改属性即时生效 · 勾「事件」后操作控件看日志 · 点「✥ 拖动」可移动控件，拖右下角 ◢ 改尺寸";
+                    : "改属性即时生效 · 勾「事件」后点控件看日志 · 点控件会有一圈蓝环 · 「✥ 拖动」移动控件，拖 ◢ 改尺寸";
                 Theme.Draw(g, tip, new Rectangle(16, ClientSize.Height - 26, ClientSize.Width - 32, 18), Theme.Tiny, Theme.Faint, TextFormatFlags.NoPadding);
 
                 DrawFlash(g, c);
